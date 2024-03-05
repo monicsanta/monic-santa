@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="authApp">
+<head>
+  <title>User Authentication</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .login-container, .signup-container, .content {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    input, button {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div ng-controller="AuthController as auth">
+    <h1>User Authentication</h1>
+    <div class="login-container" ng-hide="auth.isLoggedIn">
+      <h2>Login</h2>
+      <input type="email" ng-model="auth.loginData.email" placeholder="Email">
+      <input type="password" ng-model="auth.loginData.password" placeholder="Password">
+      <button ng-click="auth.login()">Login</button>
+      <p class="error" ng-show="auth.loginError">{{ auth.loginError }}</p>
+    </div>
+    <div class="signup-container" ng-hide="auth.isLoggedIn">
+      <h2>Sign Up</h2>
+      <input type="email" ng-model="auth.signupData.email" placeholder="Email">
+      <input type="password" ng-model="auth.signupData.password" placeholder="Password">
+      <button ng-click="auth.signup()">Sign Up</button>
+      <p class="error" ng-show="auth.signupError">{{ auth.signupError }}</p>
+    </div>
+    <div class="content" ng-show="auth.isLoggedIn">
+      <h2>Welcome, {{ auth.currentUser.email }}</h2>
+      <button ng-click="auth.logout()">Logout</button>
+      <p>This is personalized content for the logged-in user.</p>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    angular.module('authApp', [])
+    .controller('AuthController', function() {
+      var vm = this;
+
+      vm.isLoggedIn = false;
+      vm.currentUser = null;
+      vm.loginError = '';
+      vm.signupError = '';
+
+      vm.loginData = {
+        email: '',
+        password: ''
+      };
+
+      vm.signupData = {
+        email: '',
+        password: ''
+      };
+
+      vm.login = function() {
+        // Simulated login logic
+        if (vm.loginData.email === 'user@example.com' && vm.loginData.password === 'password') {
+          vm.isLoggedIn = true;
+          vm.currentUser = { email: vm.loginData.email };
+          vm.loginError = '';
+        } else {
+          vm.isLoggedIn = false;
+          vm.currentUser = null;
+          vm.loginError = 'Invalid email or password';
+        }
+      };
+
+      vm.signup = function() {
+        // Simulated signup logic
+        if (vm.signupData.email && vm.signupData.password) {
+          vm.isLoggedIn = true;
+          vm.currentUser = { email: vm.signupData.email };
+          vm.signupError = '';
+        } else {
+          vm.isLoggedIn = false;
+          vm.currentUser = null;
+          vm.signupError = 'Please enter valid email and password';
+        }
+      };
+
+      vm.logout = function() {
+        vm.isLoggedIn = false;
+        vm.currentUser = null;
+      };
+    });
+  </script>
+</body>
+</html>
