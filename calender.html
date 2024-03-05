@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="calendarApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Calendar</title>
+  <style>
+    /* CSS for responsive layout */
+    .calendar {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .calendar table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendar th, .calendar td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .calendar th {
+      background-color: #f2f2f2;
+    }
+
+    .calendar td {
+      height: 100px;
+    }
+
+    .event {
+      background-color: #007bff;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar" ng-controller="CalendarController">
+    <table>
+      <thead>
+        <tr>
+          <th ng-repeat="day in days">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="week in weeks">
+          <td ng-repeat="day in week" ng-click="addEvent(day)">
+            <div>{{ day.date }}</div>
+            <div ng-repeat="event in day.events" class="event">{{ event }}</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    angular.module('calendarApp', [])
+      .controller('CalendarController', function($scope) {
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = currentDate.getMonth();
+
+        $scope.days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        $scope.weeks = generateCalendar(currentYear, currentMonth);
+
+        function generateCalendar(year, month) {
+          var calendar = [];
+          var startDate = new Date(year, month, 1);
+          var endDate = new Date(year, month + 1, 0);
+          var week = [];
+          var dayCount = 1;
+
+          for (var i = 0; i < startDate.getDay(); i++) {
+            week.push({});
+          }
+
+          for (var day = startDate.getDate(); day <= endDate.getDate(); day++) {
+            week.push({ date: day, events: [] });
+            if (week.length === 7) {
+              calendar.push(week);
+              week = [];
+            }
+            dayCount++;
+          }
+
+          while (week.length < 7) {
+            week.push({});
+          }
+
+          calendar.push(week);
+
+          return calendar;
+        }
+
+        $scope.addEvent = function(day) {
+          var event = prompt('Enter event:');
+          if (event) {
+            day.events.push(event);
+          }
+        };
+      });
+  </script>
+</body>
+</html>
