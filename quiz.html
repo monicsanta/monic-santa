@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="quizApp">
+
+<head>
+    <title>AngularJS Quiz App</title>
+    <style>
+        /* Add your CSS styles here */
+        /* Style the quiz container, questions, options, etc. */
+    </style>
+</head>
+
+<body ng-controller="QuizController">
+    <div class="quiz-container">
+        <h1>{{ quiz.title }}</h1>
+        <div ng-if="!quizCompleted">
+            <div ng-repeat="question in quiz.questions">
+                <h3>{{ question.text }}</h3>
+                <ul>
+                    <li ng-repeat="option in question.options" ng-click="selectOption(question, option)">
+                        {{ option }}
+                    </li>
+                </ul>
+            </div>
+            <button ng-click="submitQuiz()">Submit Quiz</button>
+        </div>
+        <div ng-if="quizCompleted">
+            <h2>Quiz Completed!</h2>
+            <p>Your score: {{ score }} / {{ totalQuestions }}</p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('quizApp', [])
+            .controller('QuizController', function ($scope) {
+                $scope.quiz = {
+                    title: "AngularJS Quiz",
+                    questions: [
+                        {
+                            text: "What is AngularJS?",
+                            options: ["A JavaScript framework", "A programming language", "A database"],
+                            correctAnswer: "A JavaScript framework"
+                        },
+                        // Add more questions here
+                    ]
+                };
+
+                $scope.quizCompleted = false;
+                $scope.score = 0;
+                $scope.totalQuestions = $scope.quiz.questions.length;
+
+                $scope.selectOption = function (question, selectedOption) {
+                    if (question.selectedOption === selectedOption) {
+                        question.selectedOption = null;
+                    } else {
+                        question.selectedOption = selectedOption;
+                    }
+                };
+
+                $scope.submitQuiz = function () {
+                    $scope.score = 0;
+                    angular.forEach($scope.quiz.questions, function (question) {
+                        if (question.selectedOption === question.correctAnswer) {
+                            $scope.score++;
+                        }
+                    });
+                    $scope.quizCompleted = true;
+                };
+            });
+    </script>
+</body>
+
+</html>
