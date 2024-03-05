@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="weatherApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .weather-info {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .weather-info h2 {
+      margin-bottom: 10px;
+    }
+
+    .weather-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div ng-controller="WeatherController">
+    <h1>Real-Time Weather App</h1>
+    <div class="weather-info">
+      <h2>{{ weather.city }}</h2>
+      <p>{{ weather.temp }}°C</p>
+      <p>{{ weather.description }}</p>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    angular.module('weatherApp', [])
+      .controller('WeatherController', function($scope, $http) {
+        var apiKey = 'YOUR_API_KEY'; // Replace with your API key
+        var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=';
+        var city = 'New York'; // Default city
+
+        $http.get(apiUrl + city + '&appid=' + apiKey)
+          .then(function(response) {
+            var data = response.data;
+            $scope.weather = {
+              city: data.name,
+              temp: Math.round(data.main.temp - 273.15), // Convert Kelvin to Celsius
+              description: data.weather[0].description
+            };
+          })
+          .catch(function(error) {
+            console.log('Error fetching weather data:', error);
+          });
+      });
+  </script>
+</body>
+</html>
