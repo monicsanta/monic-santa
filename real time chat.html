@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chatApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Chat Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-container {
+            width: 400px;
+            margin: 50px auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: scroll;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .chat-input input[type="text"] {
+            width: 70%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chat-input button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div ng-controller="ChatController" class="chat-container">
+        <div class="chat-messages">
+            <div class="message" ng-repeat="message in messages">
+                <span class="username">{{message.username}}:</span>
+                <span class="text">{{message.text}}</span>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Enter your message" ng-model="newMessage" ng-keyup="$event.keyCode == 13 && sendMessage()">
+            <button ng-click="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('chatApp', [])
+            .controller('ChatController', function($scope) {
+                $scope.messages = [];
+                $scope.newMessage = '';
+
+                $scope.sendMessage = function() {
+                    if ($scope.newMessage.trim() !== '') {
+                        $scope.messages.push({ username: 'You', text: $scope.newMessage });
+                        $scope.newMessage = '';
+                    }
+                };
+            });
+    </script>
+</body>
+</html>
