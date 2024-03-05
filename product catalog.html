@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="productCatalogApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .filter {
+            margin-bottom: 20px;
+        }
+
+        .product-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body ng-controller="ProductCatalogController">
+    <div class="container">
+        <h1>Product Catalog</h1>
+        <div class="filter">
+            <label>Filter by Category:</label>
+            <select ng-model="selectedCategory">
+                <option value="">All</option>
+                <option ng-repeat="category in categories" value="{{category}}">{{category}}</option>
+            </select>
+        </div>
+        <div class="filter">
+            <label>Filter by Feature:</label>
+            <select ng-model="selectedFeature">
+                <option value="">All</option>
+                <option ng-repeat="feature in features" value="{{feature}}">{{feature}}</option>
+            </select>
+        </div>
+        <div class="product-item" ng-repeat="product in filteredProducts">
+            <h2>{{product.name}}</h2>
+            <p>Category: {{product.category}}</p>
+            <p>Price: ${{product.price}}</p>
+            <p>Features: {{product.features.join(', ')}}</p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        // AngularJS App Definition
+        angular.module('productCatalogApp', [])
+            .controller('ProductCatalogController', ['$scope', function ($scope) {
+                // Sample product data
+                $scope.products = [{
+                        name: 'Product 1',
+                        category: 'Electronics',
+                        price: 499.99,
+                        features: ['Wireless', 'Bluetooth']
+                    },
+                    {
+                        name: 'Product 2',
+                        category: 'Clothing',
+                        price: 29.99,
+                        features: ['Cotton', 'Casual']
+                    },
+                    {
+                        name: 'Product 3',
+                        category: 'Electronics',
+                        price: 799.99,
+                        features: ['4K Display', 'HDMI']
+                    },
+                    {
+                        name: 'Product 4',
+                        category: 'Books',
+                        price: 14.99,
+                        features: ['Paperback', 'Novel']
+                    },
+                    {
+                        name: 'Product 5',
+                        category: 'Clothing',
+                        price: 39.99,
+                        features: ['Silk', 'Formal']
+                    }
+                ];
+
+                // Extract categories and features from products
+                $scope.categories = [...new Set($scope.products.map(product => product.category))];
+                $scope.features = [...new Set($scope.products.flatMap(product => product.features))];
+
+                // Initialize selected category and feature
+                $scope.selectedCategory = '';
+                $scope.selectedFeature = '';
+
+                // Filter products based on selected category and feature
+                $scope.filterProducts = function () {
+                    $scope.filteredProducts = $scope.products.filter(function (product) {
+                        return ($scope.selectedCategory === '' || product.category === $scope.selectedCategory) &&
+                            ($scope.selectedFeature === '' || product.features.includes($scope.selectedFeature));
+                    });
+                };
+
+                // Initial filtering
+                $scope.filterProducts();
+
+                // Watch for changes in selected category and feature
+                $scope.$watchGroup(['selectedCategory', 'selectedFeature'], function () {
+                    $scope.filterProducts();
+                });
+            }]);
+    </script>
+</body>
+
+</html>
